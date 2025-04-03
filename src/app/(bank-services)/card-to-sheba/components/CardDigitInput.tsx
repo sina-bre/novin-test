@@ -1,13 +1,14 @@
-import { forwardRef } from "react";
+import { forwardRef, KeyboardEvent } from "react";
 import { cn } from "@/lib";
 
 interface CardDigitInputProps {
   value: string;
-  index: number; // Add index prop
+  index: number;
   error?: boolean;
   isValid?: boolean;
-  onChange: (index: number, value: string) => void; // Updated onChange type
-  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>, index: number) => void; // Updated onKeyDown type
+  onChange: (index: number, value: string) => void;
+  onKeyDown: (e: KeyboardEvent<HTMLInputElement>, index: number) => void;
+  onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void;
   maxLength?: number;
   inputMode?: "numeric";
   pattern?: string;
@@ -16,9 +17,37 @@ interface CardDigitInputProps {
 
 export const CardDigitInput = forwardRef<HTMLInputElement, CardDigitInputProps>(
   (
-    { className, error, isValid, index, onChange, onKeyDown, ...props },
+    {
+      className,
+      error,
+      isValid,
+      index,
+      onChange,
+      onKeyDown,
+      onPaste,
+      ...props
+    },
     ref
   ) => {
+    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+      const isNavigationKey = ["ArrowLeft", "ArrowRight", "Tab"].includes(
+        e.key
+      );
+      const isActionKey = ["Backspace", "Delete"].includes(e.key);
+      const isNumberKey = /^\d$/.test(e.key);
+
+      // Allow navigation keys
+      if (isNavigationKey) return;
+
+      // Prevent default for non-number keys except action keys
+      if (!isNumberKey && !isActionKey) {
+        e.preventDefault();
+        return;
+      }
+
+      onKeyDown(e, index);
+    };
+
     return (
       <div
         className={cn(
@@ -38,12 +67,18 @@ export const CardDigitInput = forwardRef<HTMLInputElement, CardDigitInputProps>(
           maxLength={1}
           className={cn(
             "w-full h-full text-center text-xl outline-none",
+            "selection:bg-transparent",
             className
           )}
-          onChange={(e) => onChange(index, e.target.value)}
-          onKeyDown={(e) => onKeyDown(e, index)}
+          onChange={(e) => {
+            const value = e.target.value.replace(/\D/g, "");
+            onChange(index, value);
+          }}
+          onKeyDown={handleKeyDown}
+          onPaste={onPaste}
           inputMode="numeric"
           pattern="\d*"
+          autoComplete="off"
           {...props}
         />
       </div>

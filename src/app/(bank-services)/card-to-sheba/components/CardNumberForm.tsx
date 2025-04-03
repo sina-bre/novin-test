@@ -48,6 +48,7 @@ export default function CardNumberForm({
       shouldValidate: true,
     });
 
+    // Move to next input if a digit was entered
     if (value && index < 15) {
       inputRefs[index + 1].current?.focus();
     }
@@ -57,20 +58,64 @@ export default function CardNumberForm({
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number
   ) => {
-    if (e.key === "Backspace") {
-      e.preventDefault();
-      const updatedCardNumber = cardNumber.split("");
-      updatedCardNumber[index] = "";
-      const newNumber = updatedCardNumber.join("");
+    const currentValue = cardNumber[index] || "";
 
-      onCardNumberChange(newNumber);
-      setValue("cardNumber", newNumber, {
-        shouldValidate: true,
-      });
+    switch (e.key) {
+      case "Backspace":
+        e.preventDefault();
+        if (currentValue) {
+          // If current input has value, clear it
+          const updatedCardNumber = cardNumber.split("");
+          updatedCardNumber[index] = "";
+          const newNumber = updatedCardNumber.join("");
+          onCardNumberChange(newNumber);
+          setValue("cardNumber", newNumber, { shouldValidate: true });
+        } else if (index > 0) {
+          // If current input is empty, go to previous input
+          inputRefs[index - 1].current?.focus();
+        }
+        break;
 
-      if (index > 0) {
-        inputRefs[index - 1].current?.focus();
-      }
+      case "Delete":
+        e.preventDefault();
+        if (currentValue) {
+          const updatedCardNumber = cardNumber.split("");
+          updatedCardNumber[index] = "";
+          const newNumber = updatedCardNumber.join("");
+          onCardNumberChange(newNumber);
+          setValue("cardNumber", newNumber, { shouldValidate: true });
+        }
+        break;
+
+      case "ArrowLeft":
+        e.preventDefault();
+        if (index > 0) {
+          inputRefs[index - 1].current?.focus();
+        }
+        break;
+
+      case "ArrowRight":
+        e.preventDefault();
+        if (index < 15) {
+          inputRefs[index + 1].current?.focus();
+        }
+        break;
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData?.getData("text");
+    if (!pastedData) return;
+
+    const numbers = pastedData.replace(/\D/g, "").slice(0, 16);
+    if (numbers) {
+      onCardNumberChange(numbers.padEnd(16, ""));
+      setValue("cardNumber", numbers, { shouldValidate: true });
+
+      // Focus the next empty input or the last input
+      const nextEmptyIndex = numbers.length < 16 ? numbers.length : 15;
+      inputRefs[nextEmptyIndex].current?.focus();
     }
   };
 
@@ -89,6 +134,7 @@ export default function CardNumberForm({
           return (
             <CardDigitInput
               key={currentIndex}
+              onPaste={handlePaste}
               index={currentIndex}
               value={currentValue}
               error={Boolean(shouldShowError)}
