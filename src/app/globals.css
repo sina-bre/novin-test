@@ -1,0 +1,28 @@
+@import "tailwindcss";
+@import "../styles/theme.css";
+/* @import '../styles/components.css'; */
+
+input::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
+  direction: rtl;
+}
+
+input::-moz-placeholder {
+  /* Firefox 19+ */
+  direction: rtl;
+}
+
+input:-ms-input-placeholder {
+  /* IE 10+ */
+  direction: rtl;
+}
+
+input:-moz-placeholder {
+  /* Firefox 18- */
+  direction: rtl;
+}
+
+input {
+  outline: none;
+  border: none;
+}

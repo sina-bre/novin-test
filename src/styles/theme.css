@@ -1,0 +1,41 @@
+@theme {
+  /* Font Settings */
+  --font-iranSansXFaNum: "var(--font-iranSansXFaNum)";
+  /* --font-iransans--font-feature-settings: 'ss01', 'ss03', 'ss04'; */
+
+  /* Font Weights */
+  --font-weight-extrablack: 950;
+  --font-weight-heavy: 1000;
+
+  /* Text Sizes */
+  --text-heading-1: 2.1875rem; /* 35px */
+  --text-heading-2: 1.75rem; /* 28px */
+  --text-heading-3: 1.5625rem; /* 25px */
+
+  /* Primary Colors */
+  --color-primary-light: #5a4bd2;
+  --color-primary-main: #5a4bd2;
+  --color-primary-dark: #5a4bd2;
+  --color-primary-active: #5a4bd2;
+
+  /* Secondary Colors */
+  --color-secondary-light: #75e2dc;
+  --color-secondary-main: #75e2dc;
+  --color-secondary-dark: #75e2dc;
+  --color-secondary-active: #75e2dc;
+
+  /* Error Colors */
+  --color-error-light: #edd5d5;
+  --color-error-main: #a54c4c;
+  --color-error-dark: #b02a37;
+
+  /* Neutral Colors */
+  --color-surface: #f5f7fa;
+  --color-black: #000;
+  --color-custom-gray-100: #aaaaaa;
+  --color-custom-gray-200: #7a7a7a;
+  --color-custom-gray-300: #818181; /* Hero section */
+  --color-hero-section-main: #2e276c;
+
+  --shadow-main: 0 0 12px var(--color-gray-200);
+}
