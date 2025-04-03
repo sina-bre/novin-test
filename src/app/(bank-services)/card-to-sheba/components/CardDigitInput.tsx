@@ -3,27 +3,22 @@ import { cn } from "@/lib";
 
 interface CardDigitInputProps {
   value: string;
+  index: number; // Add index prop
   error?: boolean;
   isValid?: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  ref: React.RefObject<HTMLInputElement>;
+  onChange: (index: number, value: string) => void; // Updated onChange type
+  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>, index: number) => void; // Updated onKeyDown type
   maxLength?: number;
   inputMode?: "numeric";
   pattern?: string;
-  onNext?: () => void;
   className?: string;
 }
 
 export const CardDigitInput = forwardRef<HTMLInputElement, CardDigitInputProps>(
-  ({ className, error, isValid, onNext, ...props }, ref) => {
-    const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      const input = e.currentTarget;
-      if (input.value && onNext) {
-        onNext();
-      }
-    };
-
+  (
+    { className, error, isValid, index, onChange, onKeyDown, ...props },
+    ref
+  ) => {
     return (
       <div
         className={cn(
@@ -31,10 +26,10 @@ export const CardDigitInput = forwardRef<HTMLInputElement, CardDigitInputProps>(
           error
             ? "border-red-500"
             : isValid
-              ? "border-0"
+              ? "border-green-500"
               : props.value
                 ? "border-blue-500"
-                : "border-black"
+                : "border-gray-300"
         )}
       >
         <input
@@ -45,9 +40,10 @@ export const CardDigitInput = forwardRef<HTMLInputElement, CardDigitInputProps>(
             "w-full h-full text-center text-xl outline-none",
             className
           )}
+          onChange={(e) => onChange(index, e.target.value)}
+          onKeyDown={(e) => onKeyDown(e, index)}
           inputMode="numeric"
           pattern="\d*"
-          onKeyUp={handleKeyUp}
           {...props}
         />
       </div>

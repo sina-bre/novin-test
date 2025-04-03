@@ -1,0 +1,16 @@
+{
+  "banks": [
+    {
+      "name": "mellat",
+      "persianName": "بانک ملت",
+      "bins": ["610433", "991975"],
+      "logo": "/mellat.png"
+    },
+    {
+      "name": "melli",
+      "persianName": "بانک ملی",
+      "bins": ["603799", "170019"],
+      "logo": "/melli.png"
+    }
+  ]
+}

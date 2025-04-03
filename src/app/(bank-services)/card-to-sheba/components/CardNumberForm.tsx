@@ -10,10 +10,17 @@ import {
 } from "@/validations/cardNumberSchema";
 import { getCardBankName } from "@/utils/cardValidation";
 
-export default function CardNumberForm() {
+interface CardNumberFormProps {
+  onCardNumberChange: (number: string) => void;
+  cardNumber: string;
+}
+
+export default function CardNumberForm({
+  onCardNumberChange,
+  cardNumber,
+}: CardNumberFormProps) {
   const {
     handleSubmit,
-    watch,
     setValue,
     formState: { errors, touchedFields },
   } = useForm<CardNumberSchema>({
@@ -24,10 +31,48 @@ export default function CardNumberForm() {
   const inputRefs = Array.from({ length: 16 }, () => ({
     current: null as HTMLInputElement | null,
   }));
-  const cardNumber = watch("cardNumber") || "";
+  // const cardNumber = watch("cardNumber") || "";
   const isDigitValid = (digit: string) => /^\d$/.test(digit);
   const bankName =
     cardNumber.length === 16 ? getCardBankName(cardNumber) : null;
+
+  const handleInputChange = (index: number, value: string) => {
+    if (value && !/^\d$/.test(value)) return;
+
+    const updatedCardNumber = cardNumber.padEnd(16, "").split("");
+    updatedCardNumber[index] = value;
+    const newNumber = updatedCardNumber.join("");
+
+    onCardNumberChange(newNumber);
+    setValue("cardNumber", newNumber, {
+      shouldValidate: true,
+    });
+
+    if (value && index < 15) {
+      inputRefs[index + 1].current?.focus();
+    }
+  };
+
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    if (e.key === "Backspace") {
+      e.preventDefault();
+      const updatedCardNumber = cardNumber.split("");
+      updatedCardNumber[index] = "";
+      const newNumber = updatedCardNumber.join("");
+
+      onCardNumberChange(newNumber);
+      setValue("cardNumber", newNumber, {
+        shouldValidate: true,
+      });
+
+      if (index > 0) {
+        inputRefs[index - 1].current?.focus();
+      }
+    }
+  };
 
   const createInputGroup = (startIndex: number, endIndex: number) => (
     <section dir="ltr" className={cn("flex justify-between gap-1")}>
@@ -44,37 +89,12 @@ export default function CardNumberForm() {
           return (
             <CardDigitInput
               key={currentIndex}
+              index={currentIndex}
               value={currentValue}
               error={Boolean(shouldShowError)}
               isValid={currentValue ? isCurrentDigitValid : undefined}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value && !/^\d$/.test(value)) return;
-
-                const updatedCardNumber = cardNumber.padEnd(16, "").split("");
-                updatedCardNumber[currentIndex] = value;
-                setValue("cardNumber", updatedCardNumber.join(""), {
-                  shouldValidate: true,
-                });
-
-                if (value && currentIndex < 15) {
-                  inputRefs[currentIndex + 1].current?.focus();
-                }
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Backspace") {
-                  e.preventDefault();
-                  const updatedCardNumber = cardNumber.split("");
-                  updatedCardNumber[currentIndex] = "";
-                  setValue("cardNumber", updatedCardNumber.join(""), {
-                    shouldValidate: true,
-                  });
-
-                  if (currentIndex > 0) {
-                    inputRefs[currentIndex - 1].current?.focus();
-                  }
-                }
-              }}
+              onChange={handleInputChange}
+              onKeyDown={(e) => handleKeyDown(e, currentIndex)}
               ref={inputRefs[currentIndex]}
               maxLength={1}
               inputMode="numeric"
