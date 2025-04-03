@@ -4,7 +4,7 @@ import { cn } from "@/lib";
 interface CardDigitInputProps {
   value: string;
   error?: boolean;
-  isValid?: boolean; // Notice the optional boolean type
+  isValid?: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   ref: React.RefObject<HTMLInputElement>;
@@ -27,14 +27,14 @@ export const CardDigitInput = forwardRef<HTMLInputElement, CardDigitInputProps>(
     return (
       <div
         className={cn(
-          "w-3 h-5 flex justify-center border-b-2",
+          "w-4 h-5 flex justify-center border-b-2",
           error
             ? "border-red-500"
             : isValid
               ? "border-0"
               : props.value
                 ? "border-blue-500"
-                : "border-gray-300"
+                : "border-black"
         )}
       >
         <input

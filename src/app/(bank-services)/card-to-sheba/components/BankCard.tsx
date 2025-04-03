@@ -10,9 +10,7 @@ export default function BankCard() {
       )}
     >
       <BankCardDetails />
-      <section className={cn("w-[370px]")}>
-        <CardNumberForm />
-      </section>
+      <CardNumberForm />
     </div>
   );
 }

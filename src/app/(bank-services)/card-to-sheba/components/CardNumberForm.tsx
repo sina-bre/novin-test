@@ -8,6 +8,7 @@ import {
   CardNumberSchema,
   cardNumberSchema,
 } from "@/validations/cardNumberSchema";
+import { getCardBankName } from "@/utils/cardValidation";
 
 export default function CardNumberForm() {
   const {
@@ -25,6 +26,8 @@ export default function CardNumberForm() {
   }));
   const cardNumber = watch("cardNumber") || "";
   const isDigitValid = (digit: string) => /^\d$/.test(digit);
+  const bankName =
+    cardNumber.length === 16 ? getCardBankName(cardNumber) : null;
 
   const createInputGroup = (startIndex: number, endIndex: number) => (
     <section dir="ltr" className={cn("flex justify-between gap-1")}>
@@ -87,13 +90,19 @@ export default function CardNumberForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={cn("space-y-4 mt-12")}>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className={cn("w-full space-y-4 mt-[5rem] px-[2rem]")}
+    >
       <div dir="ltr" className="flex justify-between gap-4">
         {createInputGroup(0, 4)}
         {createInputGroup(4, 8)}
         {createInputGroup(8, 12)}
         {createInputGroup(12, 16)}
       </div>
+      {bankName && !errors.cardNumber && (
+        <p className="text-green-600 text-sm">{bankName} Bank Card</p>
+      )}
       {errors.cardNumber && (
         <p className="text-red-500 text-sm">{errors.cardNumber.message}</p>
       )}
