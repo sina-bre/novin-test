@@ -29,12 +29,18 @@
   --color-error-main: #a54c4c;
   --color-error-dark: #b02a37;
 
+  /* Success Colors */
+  --color-success-light: #4ca579;
+  --color-success-main: #4ca579;
+  --color-success-dark: #4ca579;
+
   /* Neutral Colors */
   --color-surface: #f5f7fa;
   --color-black: #000;
   --color-custom-gray-100: #aaaaaa;
   --color-custom-gray-200: #7a7a7a;
-  --color-custom-gray-300: #818181; /* Hero section */
+  --color-custom-gray-300: #818181;
+  --color-custom-gray-400: #eaeaea;
   --color-hero-section-main: #2e276c;
 
   --shadow-main: 0 0 12px var(--color-gray-200);

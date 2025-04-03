@@ -13,12 +13,14 @@ export default function BankServicesLayout({
         "min-h-screen w-full flex flex-col items-center py-8 gap-8"
       )}
     >
-      <div className={cn("w-[1160px] flex flex-col items-center gap-8")}>
+      <div
+        className={cn("w-full max-w-[1160px] flex flex-col items-center gap-8")}
+      >
         <Suspense fallback={<NavSkeleton />}>
           <BankServicesNavigation />
         </Suspense>
 
-        <section className="w-full flex-1">
+        <section className="w-full flex justify-center">
           <Suspense fallback={<ContentSkeleton />}>{children}</Suspense>
         </section>
       </div>
